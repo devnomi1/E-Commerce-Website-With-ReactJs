@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
 	Paper,
 	Step,
@@ -9,23 +9,50 @@ import {
 	Divider,
 	CircularProgress,
 } from "@material-ui/core";
+import { commerce } from "../../../lib/Commerce";
 import useStyles from "./styles";
 import AddressForm from "../AddressForm";
 import PaymentForm from "../PaymentForm";
+import { SignalCellularNull } from "@material-ui/icons";
 
 const steps = ["Shipping address", "Payment details"];
 
-function Checkout() {
+function Checkout({ cart }) {
 	const classes = useStyles();
-    const [activeStep, setActiveStep] = useState(0);
-    
-    const Confirmation = () => (
-        <div>
-            Confirmation
-        </div>
-    )
+	const [activeStep, setActiveStep] = useState(0);
+	const [checkoutToken, setCheckoutToken] = useState(SignalCellularNull);
+	const [shippingData, setShippingData] = useState({});
 
-	const Form = () => (activeStep === 0? <AddressForm /> : <PaymentForm />);
+	useEffect(() => {
+		const generateToken = async () => {
+			try {
+				const token = await commerce.checkout.generateToken(cart.id, {
+					type: "cart",
+				});
+				console.log(token);
+				setCheckoutToken(token);
+			} catch (error) {}
+		};
+		generateToken();
+	}, [cart]);
+
+	const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
+    const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    
+	const next = (data) => {
+        setShippingData(data);
+        nextStep()
+	};
+
+	const Confirmation = () => <div>Confirmation</div>;
+
+	const Form = () =>
+		activeStep === 0 ? (
+			<AddressForm checkoutToken={checkoutToken} next={next} />
+		) : (
+			<PaymentForm shippingData={shippingData} checkoutToken={checkoutToken} />
+		);
 
 	return (
 		<>
@@ -41,8 +68,12 @@ function Checkout() {
 								<StepLabel>{step}</StepLabel>
 							</Step>
 						))}
-                    </Stepper>
-                    {activeStep=== steps.length ? <Confirmation/> : <Form/>}
+					</Stepper>
+					{activeStep === steps.length ? (
+						<Confirmation />
+					) : (
+						checkoutToken && <Form />
+					)}
 				</Paper>
 			</main>
 		</>
