@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-	Paper,
-	Step,
-	Stepper,
-	Typography,
-	StepLabel,
-	Button,
-	Divider,
-	CircularProgress,
-} from "@material-ui/core";
+import { Paper, Step, Stepper, Typography, StepLabel } from "@material-ui/core";
 import { commerce } from "../../../lib/Commerce";
 import useStyles from "./styles";
 import AddressForm from "../AddressForm";
@@ -38,11 +29,11 @@ function Checkout({ cart }) {
 
 	const nextStep = () => setActiveStep((prevActiveStep) => prevActiveStep + 1);
 
-    const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    
+	const backStep = () => setActiveStep((prevActiveStep) => prevActiveStep - 1);
+
 	const next = (data) => {
-        setShippingData(data);
-        nextStep()
+		setShippingData(data);
+		nextStep();
 	};
 
 	const Confirmation = () => <div>Confirmation</div>;
@@ -55,6 +46,7 @@ function Checkout({ cart }) {
 				shippingData={shippingData}
 				checkoutToken={checkoutToken}
 				backStep={backStep}
+				nextStep={nextStep}
 			/>
 		);
 

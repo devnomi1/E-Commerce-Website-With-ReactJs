@@ -4,18 +4,16 @@ import {
 	Toolbar,
 	IconButton,
 	Badge,
-	MenuItem,
-	Menu,
 	Typography,
 } from "@material-ui/core";
 import { ShoppingCart } from "@material-ui/icons";
 import logo from "../../assets/commerce.png";
 import useStyles from "./styles";
-import { Link , useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 function Navbar({ totalItems }) {
 	const classes = useStyles();
-	const location = useLocation()
+	const location = useLocation();
 	return (
 		<div>
 			<AppBar position="fixed" className={classes.appBar} color="inherit">
@@ -36,7 +34,7 @@ function Navbar({ totalItems }) {
 						commerce.js
 					</Typography>
 					<div className={classes.grow}></div>
-					{(location.pathname ==="/") &&(
+					{location.pathname === "/" && (
 						<div className={classes.button}>
 							<IconButton
 								component={Link}
@@ -48,7 +46,8 @@ function Navbar({ totalItems }) {
 									<ShoppingCart />
 								</Badge>
 							</IconButton>
-						</div>)}
+						</div>
+					)}
 				</Toolbar>
 			</AppBar>
 		</div>
